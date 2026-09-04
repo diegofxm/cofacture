@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package soap
 
 // Types that mirror the real schemas downloaded from the certification-environment WSDL

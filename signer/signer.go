@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package signer signs UBL documents with XAdES-EPES, as required by DIAN.
 //
 // The structure (three ds:Reference elements — document, KeyInfo and SignedProperties — plus

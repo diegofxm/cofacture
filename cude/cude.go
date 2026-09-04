@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package cude computes the Unique Electronic Document Code (Código Único de Documento
 // Electrónico, CUDE) for Credit Notes and Debit Notes, per DIAN's Technical Annex 1.9
 // (sections 11.4.3-11.4.6).

@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package qr builds the QR code URL required in the graphic representation of DIAN electronic
 // documents (Technical Annex 1.9, section 11.7.1).
 package qr

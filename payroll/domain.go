@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package payroll builds, signs and sends Individual Electronic Payroll documents
 // (NominaIndividual) to DIAN's web service (SendNominaSync).
 //

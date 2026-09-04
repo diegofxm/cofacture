@@ -1,5 +1,3 @@
-// Copyright (c) 2026 Diego Montoya
-// SPDX-License-Identifier: AGPL-3.0
 module github.com/diegofxm/cofacture
 
 go 1.26.4

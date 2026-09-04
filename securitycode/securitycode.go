@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package securitycode computes sts:SoftwareSecurityCode per section 11.8 of Technical
 // Annex 1.9. It is neither a CUFE nor a CUDE — it is the fingerprint of the DIAN-authorized
 // software, applies equally to Invoice/CreditNote/DebitNote, and therefore has its own

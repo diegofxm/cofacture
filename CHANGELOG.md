@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] — 2026-09-04
+
+### Fixed
+
+- Corrected a stale function-name reference in a doc comment (`appendSupplierParty` →
+  `appendDSSupplierParty`).
+
+### Testing
+
+- Added regression tests for `signer.LoadPKCS12`'s CA-chain fix, and for `LoadPEM` — both were
+  previously untested.
+- Added tests for `qr.SupportDocumentURL`, `qr.AdjustmentNoteContent`, and the tax-fallback
+  branches of both QR content builders (coverage 48.8% → 95.1%).
+- Added tests for `internal/dianhash.Seed`, previously untested (coverage 0% → 100%).
+
 ## [0.1.1] — 2026-09-04
 
 ### Fixed
@@ -53,5 +68,6 @@ Initial release.
   contract, for both habilitación and producción.
 - Response parser turning DIAN's validation output into a structured result.
 
+[0.1.2]: https://github.com/diegofxm/cofacture/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/diegofxm/cofacture/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/diegofxm/cofacture/releases/tag/v0.1.0

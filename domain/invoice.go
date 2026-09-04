@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package domain
 
 // Invoice is the model for an Electronic Sales Invoice (Factura Electrónica de Venta,

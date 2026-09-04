@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package zip
 
 import (
@@ -22,27 +23,27 @@ func TestBuild_RoundTrip(t *testing.T) {
 
 	r, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
 	if err != nil {
-		t.Fatalf("abrir el zip generado: %v", err)
+		t.Fatalf("open generated zip: %v", err)
 	}
 	if len(r.File) != len(files) {
-		t.Fatalf("se esperaban %d entradas, hay %d", len(files), len(r.File))
+		t.Fatalf("expected %d entries, got %d", len(files), len(r.File))
 	}
 	for i, want := range files {
 		got := r.File[i]
 		if got.Name != want.Name {
-			t.Errorf("entrada %d: nombre = %q, want %q", i, got.Name, want.Name)
+			t.Errorf("entry %d: name = %q, want %q", i, got.Name, want.Name)
 		}
 		rc, err := got.Open()
 		if err != nil {
-			t.Fatalf("abrir entrada %s: %v", got.Name, err)
+			t.Fatalf("open entry %s: %v", got.Name, err)
 		}
 		content, err := io.ReadAll(rc)
 		if err != nil {
-			t.Fatalf("leer entrada %s: %v", got.Name, err)
+			t.Fatalf("read entry %s: %v", got.Name, err)
 		}
 		rc.Close()
 		if string(content) != string(want.Content) {
-			t.Errorf("entrada %s: contenido = %q, want %q", got.Name, content, want.Content)
+			t.Errorf("entry %s: content = %q, want %q", got.Name, content, want.Content)
 		}
 	}
 }

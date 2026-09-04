@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package event computes the Unique Electronic Document Code (CUDE) for ApplicationResponse
 // events per DIAN's Technical Annex 1.9, section 11.5. This is a different formula from the
 // CUDE the cude package computes for Credit/Debit Notes — DIAN reuses the same name ("CUDE")

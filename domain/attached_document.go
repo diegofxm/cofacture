@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package domain
 
 // AttachedPartyInfo is the reduced version of a third party used by AttachedDocument

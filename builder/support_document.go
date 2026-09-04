@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package builder
 
 import (
@@ -24,6 +25,17 @@ import (
 //
 // The caller is responsible for computing the CUDS (package cuds), SoftwareSecurityCode and
 // QRURL (package qr) before calling this function — inv's fields are serialized as-is.
+//
+// DIAN business rule confirmed against a real submission (2026-09-02, rules DSAK25 "El
+// contenido de este atributo no corresponde a 31", DSAK24b "El DV del NIT del adquiriente no es
+// correcto", and DSAD06 "Valor del CUDS no está calculado correctamente"): the issuing
+// company's own Customer.Identification.TypeCode (the "adquiriente"/acquirer, since Support
+// Document's roles are inverted) must be "31" (NIT) — same requirement as DebitNote's Supplier
+// side (see domain/notes.go), but on the opposite party here. The Supplier side (the SNO) does
+// not need this from the caller — appendDSSupplierParty below already forces schemeName="31"
+// unconditionally. This package does not enforce it for the Customer side; the caller is
+// responsible for setting it correctly, or DIAN will also report the CUDS itself as
+// miscalculated (it's computed from the same identification fields that get serialized).
 func BuildSupportDocument(inv domain.Invoice) (*etree.Document, error) {
 	doc := etree.NewDocument()
 	doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8" standalone="no"`)

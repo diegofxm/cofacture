@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package cufe computes the Unique Electronic Invoice Code (Código Único de Factura
 // Electrónica, CUFE) per DIAN's Technical Annex 1.9 (Resolution 000165/2023, section 11.2).
 //

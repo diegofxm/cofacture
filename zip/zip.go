@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package zip compresses signed UBL documents into the package format required by DIAN's
 // receiving web services (SendBillSync/SendBillAsync, Technical Annex 1.9, sections
 // 6.5.7/6.5.8/7.8/7.10).

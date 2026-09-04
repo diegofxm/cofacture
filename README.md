@@ -35,8 +35,6 @@ Requires Go 1.26.4 or newer (see `go.mod`).
 The full pipeline for a single invoice, end to end. Error handling is abbreviated for readability — check every error in real code.
 
 ```go
-// Copyright (c) 2026 Diego Montoya
-// SPDX-License-Identifier: AGPL-3.0
 package main
 
 import (

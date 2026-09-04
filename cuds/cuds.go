@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package cuds computes the Unique Support Document Code (Código Único de Documento Soporte,
 // CUDS) per DIAN's Technical Annex 1.9, section 11.5.
 //

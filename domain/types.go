@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package domain contains the domain types that feed cofacture's builders.
 // They are plain structs with no persistence concerns (no db/gorm tags, no SQL) — the
 // equivalent of a DTO.

@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package dian
 
 import (
@@ -48,10 +49,10 @@ func TestParseMessage(t *testing.T) {
 
 func TestMessage_IsRejection(t *testing.T) {
 	if !(Message{Severity: "Rechazo"}).IsRejection() {
-		t.Error("Severity Rechazo debería ser un rechazo")
+		t.Error(`Severity "Rechazo" should count as a rejection`)
 	}
 	if (Message{Severity: "Notificación"}).IsRejection() {
-		t.Error("Severity Notificación no debería ser un rechazo")
+		t.Error(`Severity "Notificación" should not count as a rejection`)
 	}
 }
 
@@ -89,7 +90,7 @@ func TestInterpret_NoEmbeddedXML(t *testing.T) {
 		t.Fatalf("Interpret: %v", err)
 	}
 	if result.ApplicationResponseXML != nil {
-		t.Error("no debería haber ApplicationResponseXML cuando la respuesta no trae ninguno")
+		t.Error("ApplicationResponseXML should be nil when the response carries none")
 	}
 }
 
@@ -104,12 +105,12 @@ func TestResult_HasRejectionsAndToValidationResult(t *testing.T) {
 		ApplicationResponseXML: []byte("<ApplicationResponse/>"),
 	}
 	if result.HasRejections() {
-		t.Error("una notificación sola no debería contar como rechazo")
+		t.Error("a lone notice should not count as a rejection")
 	}
 
 	result.Messages = append(result.Messages, parseMessage("Regla: ZE02, Rechazo: firma inválida."))
 	if !result.HasRejections() {
-		t.Error("debería detectar el rechazo agregado")
+		t.Error("should detect the rejection that was appended")
 	}
 
 	vr := result.ToValidationResult("1", "SETP1", "CUFE-SHA384", "2024-01-20", "2024-01-20", "10:00:00-05:00")
@@ -132,7 +133,7 @@ func TestResult_IsTestSetClosed(t *testing.T) {
 		StatusDescription: "Set de prueba con identificador 653bf9d9-b2b1-44ae-a66d-3b9cdc4271c3 se encuentra Aceptado.",
 	}
 	if !closed.IsTestSetClosed() {
-		t.Error("debería detectar el set de pruebas cerrado")
+		t.Error("should detect the closed test set")
 	}
 
 	// A normal content rejection must not be confused with this, even though it also has
@@ -143,6 +144,6 @@ func TestResult_IsTestSetClosed(t *testing.T) {
 		Messages:          []Message{parseMessage("Regla: ZE02, Rechazo: Valor de la firma inválido.")},
 	}
 	if contentRejection.IsTestSetClosed() {
-		t.Error("un rechazo de contenido normal no debería detectarse como set de pruebas cerrado")
+		t.Error("a normal content rejection should not be detected as a closed test set")
 	}
 }

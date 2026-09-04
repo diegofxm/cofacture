@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package xml holds the UBL 2.1 + DIAN extension namespace constants shared by all builders.
 package xml
 

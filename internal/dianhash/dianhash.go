@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package dianhash contains the field-concatenation logic shared by the CUFE (package cufe)
 // and CUDE (package cude) formulas — Technical Annex 1.9, sections 11.2 and 11.4. It is
 // "internal" because it exists only so those two packages don't duplicate the same formula —

@@ -1,5 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
+
 package signer
 
 import (
@@ -22,7 +23,7 @@ func generateTestCert(t *testing.T) (*x509.Certificate, *rsa.PrivateKey) {
 	t.Helper()
 	key, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		t.Fatalf("generar llave: %v", err)
+		t.Fatalf("generate key: %v", err)
 	}
 	template := &x509.Certificate{
 		SerialNumber: big.NewInt(1),
@@ -32,11 +33,11 @@ func generateTestCert(t *testing.T) (*x509.Certificate, *rsa.PrivateKey) {
 	}
 	der, err := x509.CreateCertificate(rand.Reader, template, template, &key.PublicKey, key)
 	if err != nil {
-		t.Fatalf("crear certificado: %v", err)
+		t.Fatalf("create certificate: %v", err)
 	}
 	cert, err := x509.ParseCertificate(der)
 	if err != nil {
-		t.Fatalf("parsear certificado: %v", err)
+		t.Fatalf("parse certificate: %v", err)
 	}
 	return cert, key
 }
@@ -64,26 +65,26 @@ func verifySignature(t *testing.T, root *etree.Element, pub *rsa.PublicKey) {
 	t.Helper()
 	sig := root.FindElement("//ds:Signature")
 	if sig == nil {
-		t.Fatal("no se insertó ds:Signature")
+		t.Fatal("ds:Signature was not inserted")
 	}
 
 	signedInfo := sig.FindElement("ds:SignedInfo")
 	if signedInfo == nil {
-		t.Fatal("ds:Signature no tiene ds:SignedInfo")
+		t.Fatal("ds:Signature has no ds:SignedInfo")
 	}
 	canon, err := canonicalizer.Canonicalize(signedInfo)
 	if err != nil {
-		t.Fatalf("canonicalizar SignedInfo: %v", err)
+		t.Fatalf("canonicalize SignedInfo: %v", err)
 	}
 	hashed := sha256.Sum256(canon)
 
 	sigValueEl := sig.FindElement("ds:SignatureValue")
 	if sigValueEl == nil {
-		t.Fatal("ds:Signature no tiene ds:SignatureValue")
+		t.Fatal("ds:Signature has no ds:SignatureValue")
 	}
 	sigValue, err := base64.StdEncoding.DecodeString(sigValueEl.Text())
 	if err != nil {
-		t.Fatalf("decodificar SignatureValue: %v", err)
+		t.Fatalf("decode SignatureValue: %v", err)
 	}
 
 	if err := rsa.VerifyPKCS1v15(pub, crypto.SHA256, hashed[:], sigValue); err != nil {
@@ -92,7 +93,7 @@ func verifySignature(t *testing.T, root *etree.Element, pub *rsa.PublicKey) {
 
 	refs := signedInfo.SelectElements("ds:Reference")
 	if len(refs) != 3 {
-		t.Fatalf("se esperaban 3 ds:Reference (documento, KeyInfo, SignedProperties), hay %d", len(refs))
+		t.Fatalf("expected 3 ds:Reference (document, KeyInfo, SignedProperties), got %d", len(refs))
 	}
 }
 
@@ -118,7 +119,7 @@ func TestSign_EmptyRoleOmitsSignerRole(t *testing.T) {
 	}
 
 	if root.FindElement("//xades:SignerRole") != nil {
-		t.Error("no debería existir xades:SignerRole cuando role es vacío (caso AttachedDocument)")
+		t.Error("xades:SignerRole should not exist when role is empty (the AttachedDocument case)")
 	}
 	verifySignature(t, root, &key.PublicKey)
 }

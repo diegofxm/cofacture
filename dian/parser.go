@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package dian interprets DIAN's validation responses (soap.DianResponse) and turns them into
 // something the rest of the pipeline can use directly.
 //

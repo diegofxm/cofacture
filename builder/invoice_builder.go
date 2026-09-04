@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package builder assembles UBL 2.1 + DIAN extension documents from the domain models. It
 // does not sign, does not compute CUFE/QR, and knows nothing about HTTP or a database — it
 // only assembles the XML.

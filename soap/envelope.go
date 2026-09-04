@@ -1,6 +1,6 @@
 // Copyright (c) 2026 Diego Montoya
 // SPDX-License-Identifier: AGPL-3.0
-//
+
 // Package soap implements the SOAP 1.2 client for DIAN's receiving web services
 // (WcfDianCustomerServices), including the WS-Security header.
 //
