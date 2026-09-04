@@ -1,52 +1,22 @@
 # cofacture
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/diegofxm/cofacture.svg)](https://pkg.go.dev/github.com/diegofxm/cofacture)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/diegofxm/cofacture)](go.mod)
 [![License](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/diegofxm/cofacture)](go.mod)
 
-A Go library for Colombian electronic invoicing (DIAN): builds UBL 2.1 documents, computes CUFE/CUDE/CUDS/CUNE, signs with XAdES-EPES, and talks to DIAN's `WcfDianCustomerServices` SOAP web service.
+A Go library for Colombian DIAN electronic invoicing: UBL 2.1 document generation, XAdES-EPES digital signing, CUFE/CUDE/CUDS/CUNE computation, and a SOAP client for DIAN's `WcfDianCustomerServices` web services.
 
-`cofacture` is a **library, not a platform** — no database, no HTTP server, no opinion about how you store your data. You feed it plain Go structs; it hands back signed XML, ready to send. You wire the pipeline (build → hash → sign → zip → send) yourself.
+`cofacture` is a **library, not a platform** — no database, no HTTP server, no opinion about how you store your data. You feed it plain Go structs; it hands back signed XML, ready to package and send. You own the pipeline (build → hash → sign → zip → send): nothing here retries on your behalf, persists a consecutive number, or validates a catalog code before putting it where the technical annex says it goes.
 
 ---
 
-## What it does
+## Features
 
-- Builds every DIAN electronic document type defined over UBL 2.1: Electronic Sales Invoice, Credit Note, Debit Note, Support Document, Adjustment Note to the Support Document, Attached Document, and Documento Equivalente Electrónico (POS ticket and its other sub-types).
-- Builds Individual Electronic Payroll and its adjustment/cancellation variants (`NominaIndividual`, not UBL).
-- Builds the five RADIAN events: Acuse de Recibo, Reclamo, Recibo del Bien, Aceptación Expresa, Aceptación Tácita.
-- Computes CUFE, CUDE, CUDS, and CUNE per the DIAN Technical Annexes.
-- Signs documents with XAdES-EPES (C14N 1.0, RSA-SHA256), loading certificates from PEM or PKCS#12.
-- Packages signed XML using the ZIP format and file-naming convention DIAN's receiving service requires.
-- Implements all 16 operations of the `WcfDianCustomerServices` SOAP 1.2 + WS-Security web service (habilitación and producción): `SendBillSync`, `SendBillAsync`, `SendBillAttachmentAsync`, `SendTestSetAsync`, `GetStatus`, `GetStatusZip`, `GetNumberingRange`, `SendNominaSync`, `SendNominaSyncTestSet`, `SendEventUpdateStatus`, `GetStatusEvent`, `GetAcquirer`, `GetXmlByDocumentKey`, `GetReferenceNotes`, `GetDocumentInfo`, `GetExchangeEmails`.
-- Parses DIAN's validation responses into a structured result (rejections vs. notices, embedded `ApplicationResponse`, etc.).
-
-## Design boundaries
-
-cofacture builds and sends documents; it does not decide what goes in them:
-
-- **No catalog validation.** Tax types, unit codes, city/DANE codes, payment methods, and similar codes are placed exactly where the annex says they go — cofacture doesn't check whether the code itself is valid.
-- **No graphic representation (RIDE/PDF) generator.** DIAN doesn't validate this over SOAP; it's outside what this library does.
-- **No orchestration layer.** Numbering, idempotency, retrying async operations, and persisting consecutive numbers are the caller's responsibility.
-
-## Package map
-
-| Package | Responsibility |
-|---|---|
-| [`domain`](./domain) | Plain Go structs for every document (`Invoice`, `CreditNote`, `DebitNote`, `AdjustmentNote`, `AttachedDocument`, `Event`, `Reclamo`, `Party`, `Tax`, `Line`, ...). No validation, no persistence. |
-| [`builder`](./builder) | Assembles the UBL 2.1 + DIAN-extension XML tree from a domain model (`etree.Document`) — every document type plus the RADIAN `ApplicationResponse` events. Does not sign, hash, or send anything. |
-| [`cufe`](./cufe) | Computes the CUFE (Invoice) per Technical Annex 1.9. |
-| [`cude`](./cude) | Computes the CUDE for Credit Notes, Debit Notes, and Documento Equivalente Electrónico — same formula for all three, see the package's doc comment. |
-| [`cuds`](./cuds) | Computes the CUDS (Support Document, Adjustment Note to the Support Document). |
-| [`event`](./event) | Computes the CUDE for RADIAN events and holds their `ResponseCode` catalog and the Aceptación Tácita note template. |
-| [`payroll`](./payroll) | Builds `NominaIndividual` XML and computes the CUNE. |
-| [`securitycode`](./securitycode) | Computes `sts:SoftwareSecurityCode`. |
-| [`qr`](./qr) | Builds the QR URL/content required in every document type's graphic representation. |
-| [`signer`](./signer) | XAdES-EPES signing (C14N 1.0, RSA-SHA256) plus certificate/key loading (PEM and PKCS#12). |
-| [`zip`](./zip) | Packages signed XML into the ZIP format and file-naming convention DIAN's receiving service requires. |
-| [`soap`](./soap) | SOAP 1.2 + WS-Security client for `WcfDianCustomerServices` (habilitación and producción). |
-| [`dian`](./dian) | Interprets DIAN's validation responses into a structured `Result`. |
-| [`xml`](./xml) | Shared UBL/DIAN namespace constants. |
+- **Full document coverage** — Electronic Sales Invoice, Credit Note, Debit Note, Support Document, Adjustment Note to the Support Document, Attached Document, the five RADIAN acceptance/rejection events, Individual Electronic Payroll, and Documento Equivalente Electrónico (POS ticket and its other sub-types).
+- **XAdES-EPES signing** — inclusive C14N 1.0 canonicalization, RSA-SHA256, DIAN's fixed signature policy, built from PEM or PKCS#12 (`.p12`/`.pfx`) certificates.
+- **Hash formulas verified against DIAN's own published worked examples** (Technical Annex 1.9), not just internal regression tests — CUFE, CUDE, CUDS, and CUNE each have a dedicated test reproducing DIAN's official example.
+- **SOAP 1.2 + WS-Security client** implementing 16 operations of the `WcfDianCustomerServices` contract: `SendBillSync`, `SendBillAsync`, `SendBillAttachmentAsync`, `SendTestSetAsync`, `GetStatus`, `GetStatusZip`, `GetNumberingRange`, `SendNominaSync`, `SendNominaSyncTestSet`, `SendEventUpdateStatus`, `GetStatusEvent`, `GetAcquirer`, `GetXmlByDocumentKey`, `GetReferenceNotes`, `GetDocumentInfo`, `GetExchangeEmails`.
+- **Response interpretation** — DIAN's validation messages are parsed into a structured `Result` (rejections vs. informational notices), ready to branch on.
 
 ---
 
@@ -72,6 +42,7 @@ package main
 import (
 	"log"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/diegofxm/cofacture/builder"
@@ -86,52 +57,65 @@ import (
 )
 
 func main() {
-	// 1. Load your DIAN-issued certificate (.p12) once, reuse it across documents.
+	// 1. Load your DIAN-issued certificate (.p12) once, reuse it across documents — for both
+	//    XAdES document signing and the SOAP WS-Security header.
 	certBytes, _ := os.ReadFile("software.p12")
 	cert, key, err := signer.LoadPKCS12(certBytes, "your-p12-password")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// 2. Build the domain model. Everything here comes from your own system
+	// 2. Query the numbering range DIAN authorized for your issuer + software pair (cache the
+	//    result — it doesn't change per document). technicalKey feeds cufe.Compute() below.
+	client := soap.New(soap.HabilitacionURL, cert, key)
+	ranges, err := client.GetNumberingRange("900123456", "900123456", softwareUUID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	nr := ranges.ResponseList[0]
+
+	// 3. Build the domain model. Everything here comes from your own system
 	//    (ERP, database, order service, etc.) — cofacture never reaches out to fetch it.
-	//    supplierParty, customerParty, headerTaxes, totals, lines, numberingRange and
-	//    softwareProvider below are placeholders for values you supply; numberingRange in
-	//    particular comes from a prior call to soap.Client.GetNumberingRange.
+	//    supplierParty, customerParty, headerTaxes, totals, lines and softwareProvider below
+	//    are placeholders for values you supply.
 	inv := domain.Invoice{
-		ProfileID:         "DIAN 2.1",
+		ProfileID:         "DIAN 2.1: Factura Electrónica de Venta",
 		EnvironmentCode:   "2", // "1" production, "2" certification (habilitación)
 		OperationTypeCode: "10",
 		DocumentTypeCode:  "01",
 		HashType:          "CUFE-SHA384",
-		Prefix:            "SETP",
+		Prefix:            nr.Prefix,
 		Number:            "990000001",
-		IssueDate:         "2026-08-27",
-		IssueTime:         "10:15:00-05:00",
+		IssueDate:         time.Now().Format("2006-01-02"),
+		IssueTime:         time.Now().Format("15:04:05-07:00"),
 		CurrencyCode:      "COP",
 		Supplier:          supplierParty,
 		Customer:          customerParty,
 		HeaderTaxes:       headerTaxes,
 		Totals:            totals,
 		Lines:             lines,
-		NumberingRange:    numberingRange,
-		SoftwareProvider:  softwareProvider,
+		NumberingRange: domain.NumberingRange{
+			AuthorizedCode: nr.ResolutionNumber,
+			Prefix:         nr.Prefix,
+			StartNumber:    strconv.FormatInt(nr.FromNumber, 10),
+			EndNumber:      strconv.FormatInt(nr.ToNumber, 10),
+			StartDate:      nr.ValidDateFrom,
+			EndDate:        nr.ValidDateTo,
+		},
+		SoftwareProvider: softwareProvider,
 	}
 
-	// 3. Compute the identifiers DIAN requires before the document can be signed.
-	//    technicalKey comes from GetNumberingRange; softwareID/pin are the credentials
-	//    DIAN assigned when you activated your software.
-	inv.CUFE = cufe.Compute(inv, technicalKey)
+	// 4. Compute the identifiers DIAN requires before the document can be signed.
+	//    softwareID/pin are the credentials DIAN assigned when you activated your software.
+	inv.CUFE = cufe.Compute(inv, nr.TechnicalKey)
 	inv.SoftwareSecurityCode = securitycode.Compute(softwareID, pin, inv.Prefix+inv.Number)
 	inv.QRURL = qr.URL(inv.EnvironmentCode, inv.CUFE)
 
-	// 4. Build the UBL XML tree.
+	// 5. Build the UBL XML tree and sign it (XAdES-EPES).
 	doc, err := builder.BuildInvoice(inv)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	// 5. Sign it (XAdES-EPES).
 	placeholder, err := builder.SignaturePlaceholder(doc)
 	if err != nil {
 		log.Fatal(err)
@@ -145,14 +129,13 @@ func main() {
 	}
 
 	// 6. Name and package the file the way DIAN's receiving service expects.
-	fileName := cfzip.DocumentFileName(cfzip.KindInvoice, "900123456", cfzip.SoftwarePropioCode, 2026, 1)
+	fileName := cfzip.DocumentFileName(cfzip.KindInvoice, "900123456", cfzip.SoftwarePropioCode, time.Now().Year(), 1)
 	zipBytes, err := cfzip.Build([]cfzip.File{{Name: fileName, Content: xmlBytes}})
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// 7. Send it to DIAN and interpret the response.
-	client := soap.New(soap.HabilitacionURL, cert, key)
 	resp, err := client.SendBillSync(fileName, zipBytes)
 	if err != nil {
 		log.Fatal(err)
@@ -168,7 +151,7 @@ func main() {
 }
 ```
 
-Building a Support Document, Credit Note, Debit Note, Adjustment Note, or Payroll document follows the same shape — swap `builder.BuildInvoice` for `builder.BuildSupportDocument` / `builder.BuildCreditNote` / `builder.BuildDebitNote` / `builder.BuildAdjustmentNote` / `payroll.Build`, and `cufe.Compute` for `cuds.Compute` / `cude.Compute` / `payroll.Cune` as appropriate.
+Every other document type follows the same shape — build the domain model, compute its hash (`cude.Compute`, `cuds.Compute`, `event.Compute`, or `payroll.Cune` in place of `cufe.Compute`), build the XML tree with the matching builder (`builder.BuildSupportDocument` / `builder.BuildCreditNote` / `builder.BuildDebitNote` / `builder.BuildAdjustmentNote` / `payroll.Build`), sign, package, and send. See [Document coverage](#document-coverage) below for the full list and [Package map](#package-map) for where each piece lives.
 
 RADIAN events (`builder.BuildAcuseRecibo` and its four siblings) follow a related but not identical shape: `event.Compute` instead of `cufe.Compute`, `Sender`/`Receiver` instead of `Supplier`/`Customer`, and a `DocumentReference` pointing at the document the event applies to instead of a `BillingReference`. The event's QR is built from the *referenced* document's CUFE (`qr.URL(ev.EnvironmentCode, ev.DocumentReference.CUFE)`), not from the event's own CUDE.
 
@@ -176,12 +159,55 @@ A Documento Equivalente Electrónico (e.g. a POS ticket) is `builder.BuildInvoic
 
 ---
 
+## Document coverage
+
+| Document | Type code(s) | DIAN certification status |
+|---|---|---|
+| Electronic Sales Invoice | `01` | Confirmed accepted in DIAN's certification (habilitación) environment |
+| Credit Note | `91` | Hash formula matches DIAN's official worked example |
+| Debit Note | `92` | Hash formula matches DIAN's official worked example |
+| Support Document | `05` | Built, signed, and submitted to DIAN's certification environment during testing |
+| Adjustment Note to the Support Document | `95` | Built, signed, and submitted to DIAN's certification environment during testing |
+| Attached Document (container for Invoice/Credit Note/Debit Note) | — | Built and independently signature-verified; delivered to the acquirer, not submitted to DIAN by design |
+| RADIAN events — Acuse de Recibo, Reclamo, Recibo del Bien, Aceptación Expresa, Aceptación Tácita | `030`–`034` | Built per the technical annex's field tables; not yet submitted |
+| Individual Electronic Payroll & Adjustment | `102`/`103`/`104` | Built and independently signature-verified; not yet submitted |
+| Documento Equivalente Electrónico (POS ticket, etc.) | `20`, `25`, ... | Supported via the Invoice/Credit Note/Debit Note builders with the applicable type code; not yet submitted |
+
+### Design boundaries (not gaps)
+
+- **No catalog/reference-data validation** — tax types, unit codes, city/DANE codes, payment methods, etc. `cofacture` trusts the caller and only knows where a code goes in the XML, not whether it's valid.
+- **No graphic representation (RIDE/PDF) generator.** DIAN doesn't validate this over SOAP; it's outside this library's scope.
+- **No orchestration layer.** No single "send a document" call — you own numbering, idempotency, retry logic, and persisting consecutive numbers.
+
+---
+
+## Package map
+
+| Package | Responsibility |
+|---|---|
+| [`domain`](./domain) | Plain Go structs for every document (`Invoice`, `CreditNote`, `DebitNote`, `AdjustmentNote`, `AttachedDocument`, `Event`, `Reclamo`, `Party`, `Tax`, `Line`, ...). No validation, no persistence. |
+| [`builder`](./builder) | Assembles the UBL 2.1 + DIAN-extension XML tree from a domain model (`etree.Document`) — every document type plus the RADIAN `ApplicationResponse` events. Does not sign, hash, or send anything. |
+| [`cufe`](./cufe) | Computes the CUFE for the Electronic Sales Invoice. |
+| [`cude`](./cude) | Computes the CUDE for Credit Notes, Debit Notes, and Documento Equivalente Electrónico — same formula for all three, see the package's doc comment. |
+| [`cuds`](./cuds) | Computes the CUDS for the Support Document and its Adjustment Note. |
+| [`event`](./event) | Computes the CUDE for RADIAN events and holds their `ResponseCode` catalog and the Aceptación Tácita note template. |
+| [`payroll`](./payroll) | Builds `NominaIndividual` XML (a distinct, non-UBL schema) and computes the CUNE. |
+| [`securitycode`](./securitycode) | Computes `sts:SoftwareSecurityCode`. |
+| [`qr`](./qr) | Builds the QR URL/content required in each document type's graphic representation. |
+| [`signer`](./signer) | XAdES-EPES signing (C14N 1.0, RSA-SHA256) plus certificate/key loading (PEM and PKCS#12). |
+| [`zip`](./zip) | Packages signed XML into the ZIP format and file-naming convention DIAN's receiving service requires. |
+| [`soap`](./soap) | SOAP 1.2 + WS-Security client for `WcfDianCustomerServices` (habilitación and producción). |
+| [`dian`](./dian) | Interprets DIAN's validation responses into a structured `Result` (rejections vs. notices, embedded `ApplicationResponse`, etc.). |
+| [`xml`](./xml) | Shared UBL/DIAN namespace constants. |
+
+---
+
 ## Security notes
 
 - **Never commit certificates, `.p12`/`.pfx` files, PINs, or software IDs.** `.gitignore` already excludes common patterns (`*.p12`, `*.pfx`, `*_cert.pem`, `*_key.pem`, `.env*`), but review `git status` before every commit regardless.
-- `signer.LoadPEM` / `signer.LoadPKCS12` load key material into memory only — the library never persists it anywhere.
+- `signer.LoadPEM` / `signer.LoadPKCS12` load key material into memory only — this library never persists it anywhere.
 - `securitycode.Compute` takes your DIAN-assigned `softwareID`/`pin` directly; treat both as secrets with the same care as a private key.
-- `go test ./...` inside this module never touches the network or requires credentials.
+- Tests that talk to DIAN's real certification server require a real certificate and credentials that are never part of this module.
 
 ---
 
@@ -191,21 +217,21 @@ A Documento Equivalente Electrónico (e.g. a POS ticket) is `builder.BuildInvoic
 go test ./...
 ```
 
-Runs the unit test suite — XML golden-file comparisons, hash/signature vector checks, response-parsing tests — with no network access and no credentials required.
+Runs the full unit test suite — XML golden-file comparisons, hash/signature vector checks (several cross-checked against DIAN's own published worked examples), and response-parsing tests — with no network access and no credentials required.
 
-Tests that submit documents to DIAN's certification (habilitación) environment live in a separate sibling project outside this repository, since they require a real certificate and DIAN credentials that must never be checked into source control.
+Tests that submit documents to DIAN's certification (habilitación) environment live in a separate sibling project outside this module, since they require a real certificate and DIAN credentials that must never be checked into source control.
 
 ---
 
 ## Contributing
 
-Issues and pull requests are welcome. Found a bug? Please open an issue.
+Issues and pull requests are welcome. Please include a clear description of the problem or feature, and add or update tests for any behavior change.
 
 ---
 
 ## Disclaimer
 
-This project is an independent, community-built toolkit. It is **not affiliated with, endorsed by, or officially certified by DIAN** (*Dirección de Impuestos y Aduanas Nacionales*). Achieving DIAN's *habilitación* (certification) for a specific NIT/software combination is a separate process the taxpayer/technology provider must complete directly with DIAN; this library helps you build the documents involved, but using it correctly does not by itself grant certification.
+This project is an independent, community-built toolkit. It is **not affiliated with, endorsed by, or officially certified by DIAN** (*Dirección de Impuestos y Aduanas Nacionales*). Achieving DIAN's *habilitación* (certification) for a specific NIT/software combination is a separate process the taxpayer/technology provider must complete directly with DIAN; this library helps you build the documents involved, but using it correctly does not by itself grant certification. See [Document coverage](#document-coverage) for exactly which document types have been confirmed against a real DIAN server before relying on this library in production.
 
 ---
 

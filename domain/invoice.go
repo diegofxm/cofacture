@@ -9,7 +9,7 @@ package domain
 // computed in later pipeline steps (cufe, qr) from these same fields and injected into the
 // already-built XML before signing.
 type Invoice struct {
-	ProfileID         string // "DIAN 2.1"
+	ProfileID         string // "DIAN 2.1: Factura Electrónica de Venta"
 	EnvironmentCode   string // "1" production, "2" test/certification (also used as the UUID's schemeID)
 	OperationTypeCode string // operation type catalog, e.g. "10" = Standard
 	DocumentTypeCode  string // "01" national sales invoice

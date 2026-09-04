@@ -20,7 +20,7 @@ func ptr(s string) *string { return &s }
 
 func sampleInvoice() domain.Invoice {
 	return domain.Invoice{
-		ProfileID:         "DIAN 2.1",
+		ProfileID:         "DIAN 2.1: Factura Electrónica de Venta",
 		EnvironmentCode:   "2",
 		OperationTypeCode: "10",
 		DocumentTypeCode:  "01",

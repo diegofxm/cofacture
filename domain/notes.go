@@ -47,6 +47,14 @@ type CreditNote struct {
 // cac:LegalMonetaryTotal, and the technical annex defines no equivalent to
 // cbc:CreditNoteTypeCode for Debit Note (verified: no such element appears between
 // DocumentCurrencyCode and LineCountNumeric in section 8.4 of the annex).
+//
+// DIAN business rule confirmed against a real submission (2026-09-02, rule DAJ48 "Debe ser
+// 31"): the issuer's own Supplier.Identification.TypeCode must be "31" (NIT) — even for a
+// natural person whose Invoice/CreditNote both accept "13" (cédula) with zero complaints. A
+// related rule (DAJ39) also requires Supplier.TaxSchemeCode/"Name to be a real regime (e.g.
+// "01"/"IVA") once identified via NIT — "ZZ"/"No aplica" (otherwise fine on Invoice/CreditNote)
+// is rejected here. This package does not enforce either (same caller-trust boundary as
+// everything else here); the caller is responsible for setting both correctly.
 type DebitNote struct {
 	Invoice
 

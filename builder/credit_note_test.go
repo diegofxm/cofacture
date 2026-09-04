@@ -11,6 +11,7 @@ import (
 
 func sampleCreditNote() domain.CreditNote {
 	inv := sampleInvoice()
+	inv.ProfileID = "DIAN 2.1: Nota Crédito de Factura Electrónica de Venta"
 	inv.OperationTypeCode = "20" // credit note referencing a specific invoice
 	inv.DocumentTypeCode = "91"
 	inv.HashType = "CUDE-SHA384"

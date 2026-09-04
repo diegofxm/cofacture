@@ -11,6 +11,7 @@ import (
 
 func sampleDebitNote() domain.DebitNote {
 	inv := sampleInvoice()
+	inv.ProfileID = "DIAN 2.1: Nota Débito de Factura Electrónica de Venta"
 	inv.OperationTypeCode = "30" // debit note referencing a specific invoice
 	inv.DocumentTypeCode = "92"
 	inv.HashType = "CUDE-SHA384"

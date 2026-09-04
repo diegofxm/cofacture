@@ -37,9 +37,14 @@ func LoadPEM(certPEM, keyPEM []byte) (*x509.Certificate, *rsa.PrivateKey, error)
 }
 
 // LoadPKCS12 loads a certificate and its RSA private key from a .p12/.pfx file, exactly as
-// issued by the certificate authority.
+// issued by the certificate authority. Uses DecodeChain (not Decode) because a real
+// DIAN-issued certificate typically bundles its CA chain in the same .p12 — Decode rejects any
+// file with more than the leaf cert + key ("expected exactly two safe bags in the PFX PDU"),
+// which real-world certificates routinely violate. The chain itself is discarded: DIAN's
+// XAdES-EPES signature only ever embeds the leaf certificate (ds:X509Certificate), confirmed
+// against real accepted invoices — see cofacture/signer's own package doc comment.
 func LoadPKCS12(data []byte, password string) (*x509.Certificate, *rsa.PrivateKey, error) {
-	key, cert, err := pkcs12.Decode(data, password)
+	key, cert, _, err := pkcs12.DecodeChain(data, password)
 	if err != nil {
 		return nil, nil, fmt.Errorf("signer: %w", err)
 	}

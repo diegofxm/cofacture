@@ -37,7 +37,7 @@
   </ext:UBLExtensions>
   <cbc:UBLVersionID>UBL 2.1</cbc:UBLVersionID>
   <cbc:CustomizationID>10</cbc:CustomizationID>
-  <cbc:ProfileID>DIAN 2.1</cbc:ProfileID>
+  <cbc:ProfileID>DIAN 2.1: Factura Electrónica de Venta</cbc:ProfileID>
   <cbc:ProfileExecutionID>2</cbc:ProfileExecutionID>
   <cbc:ID>SETP1</cbc:ID>
   <cbc:UUID schemeID="2" schemeName="CUFE-SHA384"/>
