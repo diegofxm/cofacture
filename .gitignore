@@ -1,0 +1,39 @@
+# Build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace / dependency files that shouldn't be versioned
+/vendor/
+
+# Coverage
+coverage.txt
+coverage.html
+*.cover
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# --- DIAN credentials & test fixtures: NEVER commit these ---
+# Real tests (soap/real*_test.go, signer/signer_real_test.go, builder/*_real_test.go) read
+# certificates, .p12/.pfx files, PINs, and NITs from a local directory referenced via the
+# COFACTURE_TEST_FIXTURES_DIR environment variable. That directory must live outside the repo.
+*.p12
+*.pfx
+*_cert.pem
+*_key.pem
+/fixtures/
+/testfixtures/
+/docs/reference/
+.env
+.env.*
