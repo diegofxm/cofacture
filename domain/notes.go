@@ -27,16 +27,16 @@ type DiscrepancyResponse struct {
 	Description  string
 }
 
-// CreditNote is a Credit Note. It shares almost every field with Invoice — UBL treats them as
-// distinct documents, but what actually changes is the document type, the reference to the
-// corrected invoice, and the reason. That's why Invoice is reused instead of repeating ~20
-// fields.
+// CreditNote is a Credit Note. It shares almost every field with an Electronic Sales Invoice —
+// UBL treats them as distinct documents, but what actually changes is the document type, the
+// reference to the corrected document, and the reason. That's why the shared Document model is
+// embedded here instead of repeating ~20 fields.
 //
 // The inherited CUFE field actually holds this note's CUDE (the same slot DIAN uses —
 // cbc:UUID — for any of the electronic documents; HashType is what distinguishes
 // "CUFE-SHA384" from "CUDE-SHA384", not the field name in this model).
 type CreditNote struct {
-	Invoice
+	Document
 
 	CreditNoteTypeCode  string // Credit Note type catalog (cbc:CreditNoteTypeCode)
 	BillingReference    BillingReference
@@ -57,7 +57,7 @@ type CreditNote struct {
 // is rejected here. This package does not enforce either (same caller-trust boundary as
 // everything else here); the caller is responsible for setting both correctly.
 type DebitNote struct {
-	Invoice
+	Document
 
 	BillingReference    BillingReference
 	DiscrepancyResponse *DiscrepancyResponse
@@ -70,7 +70,7 @@ type DebitNote struct {
 // purchasing/issuing company (ABS). Uses CUDS-SHA384 (same formula as the Support Document).
 // The inherited CUFE field holds this note's CUDS (schemeName "CUDS-SHA384").
 type AdjustmentNote struct {
-	Invoice
+	Document
 
 	BillingReference    BillingReference // Reference to the original Support Document (UUID with schemeName CUDS-SHA384)
 	DiscrepancyResponse *DiscrepancyResponse

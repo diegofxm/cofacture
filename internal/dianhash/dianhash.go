@@ -13,7 +13,7 @@ import "github.com/diegofxm/cofacture/domain"
 // same order. The only thing that differs between the two is lastSeedComponent (the numbering
 // range's technical key for CUFE, the software PIN for CUDE) — the caller decides which one
 // it is.
-func Seed(doc domain.Invoice, lastSeedComponent string) string {
+func Seed(doc domain.Document, lastSeedComponent string) string {
 	var ivaCents, incCents, icaCents int64
 	for _, t := range doc.HeaderTaxes {
 		switch t.TypeCode {

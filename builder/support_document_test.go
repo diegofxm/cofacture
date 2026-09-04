@@ -10,7 +10,7 @@ import (
 	"github.com/diegofxm/cofacture/domain"
 )
 
-func sampleSupportDocument() domain.Invoice {
+func sampleSupportDocument() domain.Document {
 	sup := sampleInvoice()
 	sup.OperationTypeCode = "10" // Resident
 	sup.DocumentTypeCode = "05"

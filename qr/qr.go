@@ -39,7 +39,7 @@ func SupportDocumentURL(environmentCode, cuds string) string {
 // AdjustmentNoteContent builds the full QR content for the Adjustment Note to the Support
 // Document (InvoiceTypeCode "95"). Follows the same pattern as SupportDocumentContent (a
 // multi-line text block followed by the URL), adapted for the Adjustment Note document type.
-func AdjustmentNoteContent(inv domain.Invoice, cuds, softwarePIN string) string {
+func AdjustmentNoteContent(inv domain.Document, cuds, softwarePIN string) string {
 	var codImp, valImp string
 	for _, t := range inv.HeaderTaxes {
 		if t.TypeCode == "01" {
@@ -93,7 +93,7 @@ func AdjustmentNoteContent(inv domain.Invoice, cuds, softwarePIN string) string 
 //
 // Roles in the Support Document: Supplier = non-obligated third party (NumSNO), Customer =
 // issuing company (NITABS).
-func SupportDocumentContent(inv domain.Invoice, cuds, softwarePIN string) string {
+func SupportDocumentContent(inv domain.Document, cuds, softwarePIN string) string {
 	var codImp, valImp string
 	for _, t := range inv.HeaderTaxes {
 		if t.TypeCode == "01" { // VAT

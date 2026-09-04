@@ -76,7 +76,7 @@ func main() {
 	//    (ERP, database, order service, etc.) — cofacture never reaches out to fetch it.
 	//    supplierParty, customerParty, headerTaxes, totals, lines and softwareProvider below
 	//    are placeholders for values you supply.
-	inv := domain.Invoice{
+	inv := domain.Document{
 		ProfileID:         "DIAN 2.1: Factura Electrónica de Venta",
 		EnvironmentCode:   "2", // "1" production, "2" certification (habilitación)
 		OperationTypeCode: "10",
@@ -153,7 +153,7 @@ Every other document type follows the same shape — build the domain model, com
 
 RADIAN events (`builder.BuildAcuseRecibo` and its four siblings) follow a related but not identical shape: `event.Compute` instead of `cufe.Compute`, `Sender`/`Receiver` instead of `Supplier`/`Customer`, and a `DocumentReference` pointing at the document the event applies to instead of a `BillingReference`. The event's QR is built from the *referenced* document's CUFE (`qr.URL(ev.EnvironmentCode, ev.DocumentReference.CUFE)`), not from the event's own CUDE.
 
-A Documento Equivalente Electrónico (e.g. a POS ticket) is `builder.BuildInvoice` and `cude.Compute` again — same `domain.Invoice`, same pipeline as above — with five fields set differently: `ProfileID: "DIAN 2.1: Documento Equivalente POS"`, `OperationTypeCode: "10"` (this is what ends up as the `cbc:CustomizationID` XML element — the struct field is named after the DIAN concept it represents, not the element it renders to), `DocumentTypeCode: "20"` (the Technical Annex Documento Equivalente Electrónico V1.0, section 16.3, lists the codes for the other 9 sub-types), `HashType: "CUDE-SHA384"` (instead of `"CUFE-SHA384"`), and `softwarePIN` passed to `cude.Compute` where the invoice above passes `technicalKey` to `cufe.Compute`. Its Adjustment Notes are `builder.BuildCreditNote`/`BuildDebitNote` with `DocumentTypeCode`/`CreditNoteTypeCode` `"94"`/`"93"`, `OperationTypeCode` set to the *referenced* document's own type code (e.g. `"20"` for one adjusting a POS ticket), and `BillingReference.HashType` set to that referenced document's own hash scheme (`"CUDE-SHA384"` for a POS ticket, not `"CUFE-SHA384"`).
+A Documento Equivalente Electrónico (e.g. a POS ticket) is `builder.BuildInvoice` and `cude.Compute` again — same `domain.Document`, same pipeline as above — with five fields set differently: `ProfileID: "DIAN 2.1: Documento Equivalente POS"`, `OperationTypeCode: "10"` (this is what ends up as the `cbc:CustomizationID` XML element — the struct field is named after the DIAN concept it represents, not the element it renders to), `DocumentTypeCode: "20"` (the Technical Annex Documento Equivalente Electrónico V1.0, section 16.3, lists the codes for the other 9 sub-types), `HashType: "CUDE-SHA384"` (instead of `"CUFE-SHA384"`), and `softwarePIN` passed to `cude.Compute` where the invoice above passes `technicalKey` to `cufe.Compute`. Its Adjustment Notes are `builder.BuildCreditNote`/`BuildDebitNote` with `DocumentTypeCode`/`CreditNoteTypeCode` `"94"`/`"93"`, `OperationTypeCode` set to the *referenced* document's own type code (e.g. `"20"` for one adjusting a POS ticket), and `BillingReference.HashType` set to that referenced document's own hash scheme (`"CUDE-SHA384"` for a POS ticket, not `"CUFE-SHA384"`).
 
 ---
 
@@ -183,7 +183,7 @@ A Documento Equivalente Electrónico (e.g. a POS ticket) is `builder.BuildInvoic
 
 | Package | Responsibility |
 |---|---|
-| [`domain`](./domain) | Plain Go structs for every document (`Invoice`, `CreditNote`, `DebitNote`, `AdjustmentNote`, `AttachedDocument`, `Event`, `Reclamo`, `Party`, `Tax`, `Line`, ...). No validation, no persistence. |
+| [`domain`](./domain) | Plain Go structs for every document (`Document` — the shared model for Electronic Sales Invoice, Support Document, and Documento Equivalente Electrónico, also embedded in `CreditNote`/`DebitNote`/`AdjustmentNote` — plus `AttachedDocument`, `Event`, `Reclamo`, `Party`, `Tax`, `Line`, ...). No validation, no persistence. |
 | [`builder`](./builder) | Assembles the UBL 2.1 + DIAN-extension XML tree from a domain model (`etree.Document`) — every document type plus the RADIAN `ApplicationResponse` events. Does not sign, hash, or send anything. |
 | [`cufe`](./cufe) | Computes the CUFE for the Electronic Sales Invoice. |
 | [`cude`](./cude) | Computes the CUDE for Credit Notes, Debit Notes, and Documento Equivalente Electrónico — same formula for all three, see the package's doc comment. |

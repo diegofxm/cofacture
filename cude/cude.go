@@ -35,11 +35,11 @@ import (
 // The formula is identical to CUFE's in structure and field order (validated against the two
 // official annex examples, one per note type) — the only real difference is that instead of
 // the numbering range's technical key, the software's PIN is used ("Software-PIN", the same
-// one used for securitycode.Compute). noteBase is the document's own Invoice-shaped data: the
-// Invoice embedded in domain.CreditNote/domain.DebitNote (the promoted field, e.g.
-// creditNote.Invoice) for a note, or the Documento Equivalente Electrónico's own domain.Invoice
+// one used for securitycode.Compute). noteBase is the document's shared Document-shaped data:
+// the Document embedded in domain.CreditNote/domain.DebitNote (the promoted field, e.g.
+// creditNote.Document) for a note, or the Documento Equivalente Electrónico's own domain.Document
 // for that document type.
-func Compute(noteBase domain.Invoice, softwarePIN string) string {
+func Compute(noteBase domain.Document, softwarePIN string) string {
 	sum := sha512.Sum384([]byte(dianhash.Seed(noteBase, softwarePIN)))
 	return hex.EncodeToString(sum[:])
 }

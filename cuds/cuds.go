@@ -22,7 +22,7 @@ import (
 //
 // softwarePIN is the DIAN-authorized software PIN — the same value that appears in the QR
 // content's PIN field and in sts:QRCode.
-func Compute(doc domain.Invoice, softwarePIN string) string {
+func Compute(doc domain.Document, softwarePIN string) string {
 	var taxCode string
 	var taxCents int64
 	if len(doc.HeaderTaxes) > 0 {

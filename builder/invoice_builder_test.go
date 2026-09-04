@@ -19,8 +19,8 @@ var update = flag.Bool("update", false, "regenera el golden file con la salida a
 
 func ptr(s string) *string { return &s }
 
-func sampleInvoice() domain.Invoice {
-	return domain.Invoice{
+func sampleInvoice() domain.Document {
+	return domain.Document{
 		ProfileID:         "DIAN 2.1: Factura Electrónica de Venta",
 		EnvironmentCode:   "2",
 		OperationTypeCode: "10",

@@ -21,9 +21,9 @@ import (
 // Credit Note uses in sampleCreditNote() -- same digits, two different DIAN catalogs.
 func samplePOSCreditAdjustment() domain.CreditNote {
 	cn := sampleCreditNote()
-	cn.Invoice.ProfileID = "DIAN 2.1: Nota de ajuste crédito al documento equivalente"
-	cn.Invoice.OperationTypeCode = "20" // CustomizationID: referenced document is POS ("20")
-	cn.Invoice.DocumentTypeCode = "94"
+	cn.Document.ProfileID = "DIAN 2.1: Nota de ajuste crédito al documento equivalente"
+	cn.Document.OperationTypeCode = "20" // CustomizationID: referenced document is POS ("20")
+	cn.Document.DocumentTypeCode = "94"
 	cn.CreditNoteTypeCode = "94"
 	cn.BillingReference = domain.BillingReference{
 		Prefix:    "SETP",
@@ -39,9 +39,9 @@ func samplePOSCreditAdjustment() domain.CreditNote {
 // sibling of samplePOSCreditAdjustment — see that function's doc comment.
 func samplePOSDebitAdjustment() domain.DebitNote {
 	dn := sampleDebitNote()
-	dn.Invoice.ProfileID = "DIAN 2.1: Nota de ajuste débito al documento equivalente"
-	dn.Invoice.OperationTypeCode = "20" // CustomizationID: referenced document is POS ("20")
-	dn.Invoice.DocumentTypeCode = "93"
+	dn.Document.ProfileID = "DIAN 2.1: Nota de ajuste débito al documento equivalente"
+	dn.Document.OperationTypeCode = "20" // CustomizationID: referenced document is POS ("20")
+	dn.Document.DocumentTypeCode = "93"
 	dn.BillingReference = domain.BillingReference{
 		Prefix:    "SETP",
 		Number:    "1",

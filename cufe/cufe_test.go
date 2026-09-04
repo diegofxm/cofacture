@@ -13,7 +13,7 @@ import (
 // Technical Annex 1.9 (DIAN Resolution 000165/2023) — same input values and same expected
 // hash that DIAN publishes, not a made-up case.
 func TestCompute_AnexoTecnicoExample(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "323200000129",
 		IssueDate:       "2019-01-16",
 		IssueTime:       "10:53:10-05:00",

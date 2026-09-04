@@ -5,6 +5,16 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] — 2026-09-04
+
+### Changed
+
+- **Breaking:** renamed `domain.Invoice` to `domain.Document` (file `domain/invoice.go` →
+  `domain/document.go`). It was never Invoice-only — the same struct is the model for Support
+  Document and Documento Equivalente Electrónico, and is embedded in `CreditNote`, `DebitNote`,
+  and `AdjustmentNote`. The new name and doc comment reflect that; callers using `domain.Invoice`
+  or the `.Invoice` embedded-field selector need to update to `domain.Document`/`.Document`.
+
 ## [0.1.2] — 2026-09-04
 
 ### Fixed
@@ -68,6 +78,7 @@ Initial release.
   contract, for both habilitación and producción.
 - Response parser turning DIAN's validation output into a structured result.
 
+[0.2.0]: https://github.com/diegofxm/cofacture/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/diegofxm/cofacture/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/diegofxm/cofacture/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/diegofxm/cofacture/releases/tag/v0.1.0

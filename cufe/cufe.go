@@ -21,13 +21,13 @@ import (
 //
 // technicalKey is the authorized numbering range's "technical key" (ClTec) — it is obtained
 // from DIAN's GetNumberingRange web service and never travels inside the XML, so it is not
-// part of domain.Invoice/domain.NumberingRange. Whoever calls Compute is responsible for
+// part of domain.Document/domain.NumberingRange. Whoever calls Compute is responsible for
 // obtaining and storing it securely.
 //
 // Formula (section 11.2): SHA-384(NumFac+FecFac+HorFac+ValFac+CodImp1+ValImp1+CodImp2+
 // ValImp2+CodImp3+ValImp3+ValTot+NitOFE+NumAdq+ClTec+TipoAmbiente), where CodImp1/2/3 are
 // fixed "01"/"04"/"03" (VAT/INC/ICA) and ValImpN is "0.00" when that tax does not apply.
-func Compute(inv domain.Invoice, technicalKey string) string {
+func Compute(inv domain.Document, technicalKey string) string {
 	sum := sha512.Sum384([]byte(dianhash.Seed(inv, technicalKey)))
 	return hex.EncodeToString(sum[:])
 }

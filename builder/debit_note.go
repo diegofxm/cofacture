@@ -31,7 +31,7 @@ func BuildDebitNote(dn domain.DebitNote) (*etree.Document, error) {
 	root.CreateAttr("xmlns:xsi", ubl.NSXsi)
 	root.CreateAttr("xsi:schemaLocation", ubl.NSDebitNote+" http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-DebitNote-2.1.xsd")
 
-	appendUBLExtensions(root, dn.Invoice)
+	appendUBLExtensions(root, dn.Document)
 
 	root.CreateElement("cbc:UBLVersionID").SetText("UBL 2.1")
 	root.CreateElement("cbc:CustomizationID").SetText(dn.OperationTypeCode)

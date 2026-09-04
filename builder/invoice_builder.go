@@ -19,7 +19,7 @@ import (
 // The resulting document still has no real CUFE, SoftwareSecurityCode or QRURL if the Invoice
 // it received had them empty — those values are computed in later pipeline steps (cufe, qr)
 // from this same model and injected before signing.
-func BuildInvoice(inv domain.Invoice) (*etree.Document, error) {
+func BuildInvoice(inv domain.Document) (*etree.Document, error) {
 	doc := etree.NewDocument()
 	doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8" standalone="no"`)
 

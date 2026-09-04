@@ -33,7 +33,7 @@ func BuildAdjustmentNote(an domain.AdjustmentNote) (*etree.Document, error) {
 	root.CreateAttr("xsi:schemaLocation", ubl.NSCreditNote+" http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd")
 
 	// appendUBLExtensions handles InvoiceControl for type "05"/"95" (Support Document family).
-	appendUBLExtensions(root, an.Invoice)
+	appendUBLExtensions(root, an.Document)
 
 	root.CreateElement("cbc:UBLVersionID").SetText("UBL 2.1")
 	root.CreateElement("cbc:CustomizationID").SetText(an.OperationTypeCode)

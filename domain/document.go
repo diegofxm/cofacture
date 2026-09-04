@@ -3,13 +3,19 @@
 
 package domain
 
-// Invoice is the model for an Electronic Sales Invoice (Factura Electrónica de Venta,
-// InvoiceTypeCode "01").
+// Document is the shared model for every UBL 2.1 commercial document this library builds:
+// Electronic Sales Invoice (InvoiceTypeCode "01"), Support Document ("05"), Documento
+// Equivalente Electrónico ("20" and its other sub-types), and — embedded — the base of
+// CreditNote, DebitNote and AdjustmentNote (see notes.go). DIAN's technical annexes define
+// these as ~90% the same fields (parties, lines, totals, taxes); which document a given value
+// actually becomes depends entirely on which builder.Build* function you pass it to and which
+// fields you set (DocumentTypeCode, HashType, inverted Supplier/Customer roles for Support
+// Document, etc.) — this type does not encode or enforce that by itself.
 //
 // CUFE, SoftwareSecurityCode and QRURL are left empty when building the document: they are
-// computed in later pipeline steps (cufe, qr) from these same fields and injected into the
-// already-built XML before signing.
-type Invoice struct {
+// computed in later pipeline steps (cufe/cude/cuds, qr) from these same fields and injected
+// into the already-built XML before signing.
+type Document struct {
 	ProfileID         string // "DIAN 2.1: Factura Electrónica de Venta"
 	EnvironmentCode   string // "1" production, "2" test/certification (also used as the UUID's schemeID)
 	OperationTypeCode string // operation type catalog, e.g. "10" = Standard

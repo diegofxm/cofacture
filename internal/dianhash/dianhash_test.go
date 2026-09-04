@@ -16,7 +16,7 @@ import (
 // separator would still be caught by the hash test, but only as an opaque mismatch; asserting
 // the string directly here makes a future regression immediately diagnosable.
 func TestSeed_AnexoTecnicoExample(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "323200000129",
 		IssueDate:       "2019-01-16",
 		IssueTime:       "10:53:10-05:00",
@@ -46,7 +46,7 @@ func TestSeed_AnexoTecnicoExample(t *testing.T) {
 // the DIAN worked example above leaves Prefix empty, so it alone doesn't prove concatenation
 // order.
 func TestSeed_PrefixNumberConcatenation(t *testing.T) {
-	inv := domain.Invoice{Prefix: "SETP", Number: "990000001"}
+	inv := domain.Document{Prefix: "SETP", Number: "990000001"}
 	got := Seed(inv, "key")
 	const wantPrefix = "SETP990000001"
 	if len(got) < len(wantPrefix) || got[:len(wantPrefix)] != wantPrefix {
@@ -57,7 +57,7 @@ func TestSeed_PrefixNumberConcatenation(t *testing.T) {
 // TestSeed_AccumulatesMultipleTaxesOfSameType confirms two HeaderTaxes entries with the same
 // TypeCode sum into the same slot instead of only the first or last one counting.
 func TestSeed_AccumulatesMultipleTaxesOfSameType(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		HeaderTaxes: []domain.Tax{
 			{TypeCode: "01", TaxAmountCents: 100_00},
 			{TypeCode: "01", TaxAmountCents: 50_00},
@@ -73,7 +73,7 @@ func TestSeed_AccumulatesMultipleTaxesOfSameType(t *testing.T) {
 // TestSeed_AllThreeTaxSlots confirms IVA/INC/ICA each land in their own fixed slot, in order,
 // regardless of the order HeaderTaxes lists them in.
 func TestSeed_AllThreeTaxSlots(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		HeaderTaxes: []domain.Tax{
 			{TypeCode: "03", TaxAmountCents: 300_00}, // ICA, listed first
 			{TypeCode: "01", TaxAmountCents: 100_00}, // IVA
@@ -91,7 +91,7 @@ func TestSeed_AllThreeTaxSlots(t *testing.T) {
 // which belong in a separate WithholdingTaxTotal, not HeaderTaxes) contributes to none of the
 // three fixed slots.
 func TestSeed_IgnoresOtherTaxTypes(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		HeaderTaxes: []domain.Tax{
 			{TypeCode: "06", TaxAmountCents: 999_00}, // ReteRenta — not part of the CUFE/CUDE formula
 		},

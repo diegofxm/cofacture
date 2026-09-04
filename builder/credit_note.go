@@ -31,7 +31,7 @@ func BuildCreditNote(cn domain.CreditNote) (*etree.Document, error) {
 	root.CreateAttr("xmlns:xsi", ubl.NSXsi)
 	root.CreateAttr("xsi:schemaLocation", ubl.NSCreditNote+" http://docs.oasis-open.org/ubl/os-UBL-2.1/xsd/maindoc/UBL-CreditNote-2.1.xsd")
 
-	appendUBLExtensions(root, cn.Invoice)
+	appendUBLExtensions(root, cn.Document)
 
 	root.CreateElement("cbc:UBLVersionID").SetText("UBL 2.1")
 	root.CreateElement("cbc:CustomizationID").SetText(cn.OperationTypeCode)

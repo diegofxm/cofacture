@@ -14,7 +14,7 @@ import (
 // The expected hash was derived from the implementation verified in TestCompute_EjemplosOficial_DS
 // and serves as a regression guard for the formula.
 func TestCompute(t *testing.T) {
-	doc := domain.Invoice{
+	doc := domain.Document{
 		Number:          "8110007871",
 		IssueDate:       "2019-01-12",
 		IssueTime:       "07:00:00-05:00",
@@ -57,7 +57,7 @@ func TestCompute(t *testing.T) {
 //   - PIN: "12345", EnvCode: "2"
 //   - Expected CUDS: c96a728f4453822bfc69b94253880d21d29dd1a9424444da07610799c203506d33fa4f16830dbd6ee0febb4711bfa23a
 func TestCompute_EjemplosOficial_DS(t *testing.T) {
-	doc := domain.Invoice{
+	doc := domain.Document{
 		Prefix:          "DS",
 		Number:          "236000000",
 		IssueDate:       "2022-02-18",

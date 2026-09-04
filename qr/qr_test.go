@@ -25,7 +25,7 @@ func TestURL(t *testing.T) {
 }
 
 func TestSupportDocumentContent(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Prefix:          "DS",
 		Number:          "1",
 		IssueDate:       "2024-03-15",
@@ -79,7 +79,7 @@ func TestSupportDocumentContent(t *testing.T) {
 
 // TestSupportDocumentContent_Produccion verifies that environment "1" uses the production domain.
 func TestSupportDocumentContent_Produccion(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "99",
 		IssueDate:       "2024-01-01",
 		IssueTime:       "00:00:00-05:00",
@@ -104,7 +104,7 @@ func TestSupportDocumentContent_Produccion(t *testing.T) {
 // entries but none is VAT ("01"), CodImp/ValImp fall back to the first tax in the slice instead
 // of the "01"/"0.00" default.
 func TestSupportDocumentContent_NoVATFallsBackToFirstTax(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "1",
 		IssueDate:       "2024-01-01",
 		IssueTime:       "00:00:00-05:00",
@@ -125,7 +125,7 @@ func TestSupportDocumentContent_NoVATFallsBackToFirstTax(t *testing.T) {
 // TestSupportDocumentContent_NoTaxesDefaultsToZero confirms that with zero HeaderTaxes,
 // CodImp/ValImp default to "01"/"0.00" instead of being left empty.
 func TestSupportDocumentContent_NoTaxesDefaultsToZero(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "1",
 		IssueDate:       "2024-01-01",
 		IssueTime:       "00:00:00-05:00",
@@ -155,7 +155,7 @@ func TestSupportDocumentURL(t *testing.T) {
 }
 
 func TestAdjustmentNoteContent(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Prefix:          "NAP",
 		Number:          "1",
 		IssueDate:       "2024-03-15",
@@ -207,7 +207,7 @@ func TestAdjustmentNoteContent(t *testing.T) {
 
 // TestAdjustmentNoteContent_Produccion verifies that environment "1" uses the production domain.
 func TestAdjustmentNoteContent_Produccion(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "99",
 		IssueDate:       "2024-01-01",
 		IssueTime:       "00:00:00-05:00",
@@ -232,7 +232,7 @@ func TestAdjustmentNoteContent_Produccion(t *testing.T) {
 // TestSupportDocumentContent_NoTaxesDefaultsToZero for AdjustmentNoteContent's own (duplicated)
 // fallback logic.
 func TestAdjustmentNoteContent_NoTaxesDefaultsToZero(t *testing.T) {
-	inv := domain.Invoice{
+	inv := domain.Document{
 		Number:          "1",
 		IssueDate:       "2024-01-01",
 		IssueTime:       "00:00:00-05:00",

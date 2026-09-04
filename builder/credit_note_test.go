@@ -20,7 +20,7 @@ func sampleCreditNote() domain.CreditNote {
 	inv.Number = "1"
 
 	return domain.CreditNote{
-		Invoice:            inv,
+		Document:           inv,
 		CreditNoteTypeCode: "91", // fixed DIAN code for a Credit Note (document type); the List 22 concept goes in DiscrepancyResponse
 		BillingReference: domain.BillingReference{
 			Prefix:    "SETP",

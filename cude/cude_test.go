@@ -12,7 +12,7 @@ import (
 // TestCompute_CreditNote uses the official example from section 11.4.3/11.4.4 of the
 // Technical Annex 1.9 — same input values and same expected hash that DIAN publishes.
 func TestCompute_CreditNote(t *testing.T) {
-	note := domain.Invoice{
+	note := domain.Document{
 		Number:          "8110007871",
 		IssueDate:       "2019-01-12",
 		IssueTime:       "07:00:00-05:00",
@@ -48,7 +48,7 @@ func TestCompute_CreditNote(t *testing.T) {
 // does reproduce its own hash correctly — that's why we trust the formula and use the
 // mathematically correct hash here, not the published one.
 func TestCompute_DebitNote(t *testing.T) {
-	note := domain.Invoice{
+	note := domain.Document{
 		Number:          "ND1001",
 		IssueDate:       "2019-01-18",
 		IssueTime:       "10:58:00-05:00",

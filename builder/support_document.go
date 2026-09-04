@@ -36,7 +36,7 @@ import (
 // unconditionally. This package does not enforce it for the Customer side; the caller is
 // responsible for setting it correctly, or DIAN will also report the CUDS itself as
 // miscalculated (it's computed from the same identification fields that get serialized).
-func BuildSupportDocument(inv domain.Invoice) (*etree.Document, error) {
+func BuildSupportDocument(inv domain.Document) (*etree.Document, error) {
 	doc := etree.NewDocument()
 	doc.CreateProcInst("xml", `version="1.0" encoding="UTF-8" standalone="no"`)
 

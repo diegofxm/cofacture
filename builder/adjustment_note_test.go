@@ -25,7 +25,7 @@ func sampleAdjustmentNote() domain.AdjustmentNote {
 	inv.Number = "1"
 
 	return domain.AdjustmentNote{
-		Invoice: inv,
+		Document: inv,
 		BillingReference: domain.BillingReference{
 			Prefix:    "SEDS",
 			Number:    "1",

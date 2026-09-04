@@ -37,7 +37,7 @@ func SignaturePlaceholder(doc *etree.Document) (*etree.Element, error) {
 // appendUBLExtensions adds ext:UBLExtensions with the DIAN extensions (sts:DianExtensions) and
 // a second, empty ext:UBLExtension, reserved for the XAdES signature that the signer package
 // adds in a later pipeline step.
-func appendUBLExtensions(parent *etree.Element, inv domain.Invoice) {
+func appendUBLExtensions(parent *etree.Element, inv domain.Document) {
 	extensions := parent.CreateElement("ext:UBLExtensions")
 
 	dianExt := extensions.CreateElement("ext:UBLExtension").

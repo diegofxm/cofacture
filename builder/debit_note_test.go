@@ -20,7 +20,7 @@ func sampleDebitNote() domain.DebitNote {
 	inv.Number = "1"
 
 	return domain.DebitNote{
-		Invoice: inv,
+		Document: inv,
 		BillingReference: domain.BillingReference{
 			Prefix:    "SETP",
 			Number:    "1",

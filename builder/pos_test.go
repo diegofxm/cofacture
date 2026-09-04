@@ -18,7 +18,7 @@ import (
 // a regular invoice per the annex's own field tables (see cude.Compute's doc comment for the
 // CUDE side of this same claim). This test exists to verify that claim holds for BuildInvoice
 // too, not just assert it in a comment.
-func samplePOSInvoice() domain.Invoice {
+func samplePOSInvoice() domain.Document {
 	inv := sampleInvoice()
 	inv.ProfileID = "DIAN 2.1: Documento Equivalente POS"
 	inv.OperationTypeCode = "10"
